@@ -1,16 +1,36 @@
-import React from 'react'
-import { View, Text, StyleSheet, SafeAreaView, Button, Platform, TouchableOpacity } from 'react-native'
+import React, { createRef, useState } from 'react'
+import { View, Text, TextInput, StyleSheet, SafeAreaView, Button, Platform, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import CreateHabit from './CreateHabit'
+import ActionSheet from 'react-native-actions-sheet'
+import * as Font from 'expo-font'
+import AppLoading from 'expo-app-loading'
 
-interface Props {
-
+const fetchFonts = () => {
+    return Font.loadAsync({
+        'san-francisco': require('../assets/font/SF-UI-Display-Regular.otf'),
+        'san-francisco-bold': require('../assets/font/SF-UI-Display-Bold.otf')
+    })
 }
 
-const Home = (props: Props) => {
+const Home = () => {
+    const actionSheetRef: React.RefObject<ActionSheet> = createRef()
+    const [dataLoaded, setDataLoaded] = useState(false)
+
+    if (!dataLoaded) {
+        return <AppLoading
+            startAsync={fetchFonts}
+            onFinish={() => setDataLoaded(true)}
+            onError={(err: any) => console.log(err)} />
+    }
+
     return (
         <SafeAreaView style={styles.page}>
             <View style={styles.header}>
-                <Ionicons name="add" size={50} onPress={() => console.log('dab')} />
+                <Ionicons
+                    name="add"
+                    size={50}
+                    onPress={() => actionSheetRef.current?.setModalVisible()} />
             </View>
 
             <View style={styles.body}>
@@ -24,7 +44,7 @@ const Home = (props: Props) => {
                     </View>
                 </View>
 
-
+                <CreateHabit asRef={actionSheetRef} />
             </View>
         </SafeAreaView>
     )
@@ -34,6 +54,7 @@ const styles = StyleSheet.create({
     page: {
         flex: 1,
         paddingTop: Platform.OS == 'android' ? 50 : 0,
+        fontFamily: 'san-francisco'
     },
     header: {
         height: 50,
