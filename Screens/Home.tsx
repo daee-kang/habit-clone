@@ -1,10 +1,11 @@
-import React, { createRef, useState } from 'react'
+import React, { createRef, useState, useContext } from 'react'
 import { View, Text, TextInput, StyleSheet, SafeAreaView, Button, Platform, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import CreateHabit from './CreateHabit'
 import ActionSheet from 'react-native-actions-sheet'
 import * as Font from 'expo-font'
 import AppLoading from 'expo-app-loading'
+import { Context } from '../context/SheetContext'
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -14,7 +15,7 @@ const fetchFonts = () => {
 }
 
 const Home = () => {
-    const actionSheetRef: React.RefObject<ActionSheet> = createRef()
+    const { actionSheetRef } = useContext(Context)
     const [dataLoaded, setDataLoaded] = useState(false)
 
     if (!dataLoaded) {
@@ -30,7 +31,7 @@ const Home = () => {
                 <Ionicons
                     name="add"
                     size={50}
-                    onPress={() => actionSheetRef.current?.setModalVisible()} />
+                    onPress={() => actionSheetRef?.current?.setModalVisible()} />
             </View>
 
             <View style={styles.body}>
@@ -44,7 +45,8 @@ const Home = () => {
                     </View>
                 </View>
 
-                <CreateHabit asRef={actionSheetRef} />
+
+                <CreateHabit />
             </View>
         </SafeAreaView>
     )

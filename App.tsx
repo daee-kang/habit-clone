@@ -3,12 +3,15 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from './context/SheetContext'
 
 export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        <Home />
+        <Provider>
+          <Home />
+        </Provider>
       </View>
     </NavigationContainer>
   );
