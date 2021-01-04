@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, Switch } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
 import { Context } from '../context/SheetContext'
+import { StackNavigationProp } from '@react-navigation/stack'
 
 
 const divider = <View
@@ -13,7 +14,8 @@ const divider = <View
     }}
 />
 
-const CreateHabitMain = () => {
+//i really don't wanna deal with this navigation prop type bruh
+const CreateHabitMain = ({ navigation }: any) => {
     const { actionSheetRef } = useContext(Context)
     const nameInputRef: React.RefObject<TextInput> = createRef()
 
@@ -59,7 +61,7 @@ const CreateHabitMain = () => {
                 />
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => console.log("repeat pressed")}>
+                    onPress={() => navigation.navigate("repeat")}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Repeat</Text>
                     <Text style={{ fontSize: 16 }}>every day</Text>
                     <Ionicons name="chevron-forward-outline" size={20} color={"gray"} />

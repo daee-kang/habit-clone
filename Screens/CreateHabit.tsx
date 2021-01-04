@@ -4,6 +4,7 @@ import ActionSheet from 'react-native-actions-sheet'
 import { createStackNavigator } from '@react-navigation/stack';
 import CreateHabitMain from './CreateHabitMain';
 import { Context } from '../context/SheetContext'
+import RepeatPicker from './RepeatPicker';
 
 const Stack = createStackNavigator()
 
@@ -18,6 +19,7 @@ const CreateHabit = () => {
                         headerShown: false
                     }}>
                     <Stack.Screen name="main" component={CreateHabitMain} />
+                    <Stack.Screen name="repeat" component={RepeatPicker} />
                 </Stack.Navigator>
             </View>
         </ActionSheet>
