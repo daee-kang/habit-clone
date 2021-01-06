@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native'
 
 interface Props {
 
@@ -11,7 +11,10 @@ const RepeatPicker = ({ navigation }: any) => {
     return (
         <View>
             <View style={styles.navigation}>
-                <TouchableOpacity style={styles.backButton} activeOpacity={1} onPress={() => navigation.goBack()} >
+                <TouchableOpacity style={styles.backButton} activeOpacity={1} onPress={() => {
+                    navigation.goBack()
+                    console.log("clicked")
+                }} >
                     <Ionicons name="chevron-back-outline" size={40} />
                 </TouchableOpacity>
                 <Text style={styles.title}>Choose regularity</Text>

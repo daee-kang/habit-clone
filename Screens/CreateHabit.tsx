@@ -1,12 +1,16 @@
 import React, { createRef, useEffect, useState, useContext } from 'react'
 import { View, Text, StyleSheet, Platform, TextInput } from 'react-native'
 import ActionSheet from 'react-native-actions-sheet'
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import CreateHabitMain from './CreateHabitMain';
 import { Context } from '../context/SheetContext'
 import RepeatPicker from './RepeatPicker';
 
 const Stack = createStackNavigator()
+
+const TransitionScreenOptions = {
+    ...TransitionPresets.SlideFromRightIOS, // This is where the transition happens
+};
 
 const CreateHabit = () => {
     const { actionSheetRef } = useContext(Context)
@@ -16,6 +20,7 @@ const CreateHabit = () => {
             <View style={styles.sheet}>
                 <Stack.Navigator
                     screenOptions={{
+                        ...TransitionScreenOptions,
                         headerShown: false
                     }}>
                     <Stack.Screen name="main" component={CreateHabitMain} />
