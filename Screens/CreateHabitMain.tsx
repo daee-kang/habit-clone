@@ -1,9 +1,11 @@
-import React, { useState, createRef, useEffect, useContext } from 'react'
-import { View, Text, TextInput, StyleSheet, Switch } from 'react-native'
+import React, { useState, createRef, useEffect, useContext, useRef } from 'react'
+import { View, Text, TextInput, StyleSheet, Switch, Animated } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
 import { Context } from '../context/SheetContext'
 import { StackNavigationProp } from '@react-navigation/stack'
+import ColorPicker from './ColorPicker'
+import COLORS from '../consts/colors'
 
 
 const divider = <View
@@ -23,8 +25,14 @@ const CreateHabitMain = ({ navigation }: any) => {
     const [motivateQuote, setMotivateQuote] = useState("")
     const [remindMe, setRemindMe] = useState(false)
     const [timesPerWeek, setTimesPerWeek] = useState(1);
+    const [color, setColor] = useState<string>(COLORS.blue)
+
+    const [colorEditorOpen, setColorEditorOpen] = useState(false)
 
     useEffect(() => {
+        const item = Object.values(COLORS)
+        setColor(item[Math.floor(Math.random() * item.length)])
+
         setTimeout(() => {
             nameInputRef.current?.focus()
         }, 800)
@@ -60,8 +68,8 @@ const CreateHabitMain = ({ navigation }: any) => {
     }
 
     return (
-        <View style={{}}>
-            <View style={styles.navigation}>
+        <View style={{ height: '100%' }}>
+            <View style={[styles.navigation, { backgroundColor: color }]}>
                 <Text
                     style={styles.buttons}
                     onPress={() => actionSheetRef?.current?.hide()}>
@@ -71,7 +79,7 @@ const CreateHabitMain = ({ navigation }: any) => {
                 <Text style={styles.buttons}>Save</Text>
             </View>
 
-            <View style={styles.nameForm}>
+            <View style={[styles.nameForm, { backgroundColor: color }]}>
                 <Text style={{ fontSize: 12 }}>NAME</Text>
                 <TextInput
                     ref={nameInputRef}
@@ -102,9 +110,9 @@ const CreateHabitMain = ({ navigation }: any) => {
                 </TouchableOpacity>
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => console.log("repeat pressed")}>
+                    onPress={() => setColorEditorOpen(true)}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Choose Color</Text>
-                    <View style={styles.colorCircle} />
+                    <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 </TouchableOpacity>
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
@@ -121,6 +129,7 @@ const CreateHabitMain = ({ navigation }: any) => {
                 </Text>
                 {divider}
             </View>
+            {colorEditorOpen ? <ColorPicker color={color} setColor={setColor} exit={setColorEditorOpen} /> : null}
         </View>
     )
 }
@@ -130,8 +139,6 @@ const styles = StyleSheet.create({
         height: 80,
         flexDirection: 'row',
         padding: 20,
-        backgroundColor: 'orange',
-
     },
     title: {
         flex: 1,
@@ -173,8 +180,12 @@ const styles = StyleSheet.create({
     colorCircle: {
         height: 30,
         width: 30,
-        backgroundColor: 'orange',
         borderRadius: 15
+    },
+    fadingContainer: {
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
     }
 })
 
