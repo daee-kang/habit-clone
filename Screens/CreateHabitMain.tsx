@@ -22,12 +22,42 @@ const CreateHabitMain = ({ navigation }: any) => {
     const [habitName, setHabitName] = useState("")
     const [motivateQuote, setMotivateQuote] = useState("")
     const [remindMe, setRemindMe] = useState(false)
+    const [timesPerWeek, setTimesPerWeek] = useState(1);
 
     useEffect(() => {
         setTimeout(() => {
             nameInputRef.current?.focus()
         }, 800)
     }, [])
+
+    const getRegularityDisplayText = (num: Number) => {
+        switch (num) {
+            case 1: {
+                return 'Once per week'
+            }
+            case 2: {
+                return 'Twice per week'
+            }
+            case 3: {
+                return '3 times per week'
+            }
+            case 4: {
+                return '4 times per week'
+            }
+            case 5: {
+                return '5 times per week'
+            }
+            case 6: {
+                return '6 times per week'
+            }
+            case 7: {
+                return 'Everyday'
+            }
+            default: {
+                `how'd you get here`
+            }
+        }
+    }
 
     return (
         <View style={{}}>
@@ -36,7 +66,7 @@ const CreateHabitMain = ({ navigation }: any) => {
                     style={styles.buttons}
                     onPress={() => actionSheetRef?.current?.hide()}>
                     Cancel
-                        </Text>
+                </Text>
                 <Text style={styles.title}>Create a Habit</Text>
                 <Text style={styles.buttons}>Save</Text>
             </View>
@@ -61,9 +91,13 @@ const CreateHabitMain = ({ navigation }: any) => {
                 />
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => navigation.navigate("repeat")}>
+                    onPress={() => navigation.navigate("repeat", {
+                        timesPerWeek,
+                        setTimesPerWeek,
+                        getRegularityDisplayText
+                    })}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Repeat</Text>
-                    <Text style={{ fontSize: 16 }}>every day</Text>
+                    <Text style={{ fontSize: 16 }}>{getRegularityDisplayText(timesPerWeek)}</Text>
                     <Ionicons name="chevron-forward-outline" size={20} color={"gray"} />
                 </TouchableOpacity>
                 {divider}
