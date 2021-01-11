@@ -1,11 +1,11 @@
-import React, { createRef, useState, useContext } from 'react'
-import { View, Text, TextInput, StyleSheet, SafeAreaView, Button, Platform, TouchableOpacity } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import CreateHabit from './CreateHabit'
-import ActionSheet from 'react-native-actions-sheet'
+import CreateHabit from './CreateHabit/CreateHabit'
 import * as Font from 'expo-font'
 import AppLoading from 'expo-app-loading'
 import { Context } from '../context/SheetContext'
+import ItemsList from './ItemsList'
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -44,10 +44,9 @@ const Home = () => {
                         <Text style={styles.calendar}>some shit here</Text>
                     </View>
                 </View>
-
-
-                <CreateHabit />
+                <ItemsList />
             </View>
+            <CreateHabit />
         </SafeAreaView>
     )
 }
@@ -67,12 +66,12 @@ const styles = StyleSheet.create({
     },
     header2: {
         height: 50,
-        paddingHorizontal: 20,
+        paddingHorizontal: 40,
         flexDirection: 'row',
         justifyContent: 'flex-end'
     },
     body: {
-        paddingHorizontal: 20,
+        //paddingHorizontal: 20,
     },
     title: {
         fontSize: 40,

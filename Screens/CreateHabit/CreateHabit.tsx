@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Platform, TextInput } from 'react-native'
 import ActionSheet from 'react-native-actions-sheet'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import CreateHabitMain from './CreateHabitMain';
-import { Context } from '../context/SheetContext'
+import { Context } from '../../context/SheetContext'
 import RepeatPicker from './RepeatPicker';
 
 const Stack = createStackNavigator()

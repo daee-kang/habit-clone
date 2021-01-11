@@ -41,7 +41,7 @@ const RepeatPicker = ({ route, navigation }: any) => {
             <View style={styles.navigation}>
                 <TouchableOpacity style={styles.backButton} activeOpacity={1} onPress={() => {
                     navigation.goBack()
-                }} >
+                }}>
                     <Ionicons name="chevron-back-outline" size={40} />
                 </TouchableOpacity>
                 <Text style={styles.title}>Choose regularity</Text>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     listItem: {
-        paddingVertical: 13,
+        paddingVertical: 15,
         paddingHorizontal: 8,
         marginHorizontal: -10,
         flexDirection: 'row'

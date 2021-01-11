@@ -1,12 +1,12 @@
 import React, { useState, createRef, useEffect, useContext, useRef } from 'react'
-import { View, Text, TextInput, StyleSheet, Switch, Animated } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Switch, Keyboard, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
-import { Context } from '../context/SheetContext'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { Context } from '../../context/SheetContext'
 import ColorPicker from './ColorPicker'
-import COLORS from '../consts/colors'
-
+import COLORS from '../../consts/colors'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import asyncStorage from '@react-native-async-storage/async-storage'
 
 const divider = <View
     style={{
@@ -26,6 +26,10 @@ const CreateHabitMain = ({ navigation }: any) => {
     const [remindMe, setRemindMe] = useState(false)
     const [timesPerWeek, setTimesPerWeek] = useState(1);
     const [color, setColor] = useState<string>(COLORS.blue)
+    //time stuff
+    const [time, setTime] = useState(new Date())
+    const [showTime, setShowTime] = useState(false)
+    const [displayTime, setDisplayTime] = useState("")
 
     const [colorEditorOpen, setColorEditorOpen] = useState(false)
 
@@ -37,6 +41,10 @@ const CreateHabitMain = ({ navigation }: any) => {
             nameInputRef.current?.focus()
         }, 800)
     }, [])
+
+    useEffect(() => {
+        setDisplayTime(getReadableTime())
+    }, [time])
 
     const getRegularityDisplayText = (num: Number) => {
         switch (num) {
@@ -67,6 +75,30 @@ const CreateHabitMain = ({ navigation }: any) => {
         }
     }
 
+    //--------------time helper functions
+    const getReadableTime = () => {
+        return `${getHour() + ':' + getMin() + ' ' + AMPM()}`
+    }
+    const getMin = () => {
+        let x = time.getMinutes()
+        let out = ""
+        if (x < 10) {
+            out = "0" + x
+            return out;
+        }
+        return String(x)
+    }
+    const getHour = () => {
+        let x = time.getHours()
+        if (x == 0) return "12"
+        if (x > 12) return String(x % 12)
+    }
+    const AMPM = () => {
+        if (time.getHours() >= 12) {
+            return "PM"
+        } else return "AM"
+    }
+
     return (
         <View style={{ height: '100%' }}>
             <View style={[styles.navigation, { backgroundColor: color }]}>
@@ -76,7 +108,31 @@ const CreateHabitMain = ({ navigation }: any) => {
                     Cancel
                 </Text>
                 <Text style={styles.title}>Create a Habit</Text>
-                <Text style={styles.buttons}>Save</Text>
+                <Text
+                    style={styles.buttons}
+                    onPress={() => {
+                        if (habitName === "") return
+
+                        let item = {
+                            motivateQuote,
+                            timesPerWeek,
+                            color,
+                            time
+                        }
+                        console.log(item)
+
+                        asyncStorage.setItem(habitName, JSON.stringify(item), err => {
+                            if (err) console.log('CANT SAVE OBJECT: ', err)
+                        }).then((val) => {
+                            console.log('saved!', val);
+                            actionSheetRef?.current?.hide();
+                            asyncStorage.getAllKeys().then((val) => {
+                                console.log(val)
+                            })
+                        })
+
+                    }}
+                >Save</Text>
             </View>
 
             <View style={[styles.nameForm, { backgroundColor: color }]}>
@@ -99,34 +155,67 @@ const CreateHabitMain = ({ navigation }: any) => {
                 />
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => navigation.navigate("repeat", {
-                        timesPerWeek,
-                        setTimesPerWeek,
-                        getRegularityDisplayText
-                    })}>
+                    onPress={() => {
+                        navigation.navigate("repeat", {
+                            timesPerWeek,
+                            setTimesPerWeek,
+                            getRegularityDisplayText
+                        })
+                        Keyboard.dismiss()
+                    }}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Repeat</Text>
                     <Text style={{ fontSize: 16 }}>{getRegularityDisplayText(timesPerWeek)}</Text>
                     <Ionicons name="chevron-forward-outline" size={20} color={"gray"} />
                 </TouchableOpacity>
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => setColorEditorOpen(true)}>
+                    onPress={() => {
+                        setColorEditorOpen(true)
+                        Keyboard.dismiss()
+                    }}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Choose Color</Text>
                     <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 </TouchableOpacity>
                 {divider}
                 <TouchableOpacity style={styles.tab} activeOpacity={1}
-                    onPress={() => console.log("repeat pressed")}>
+                    onPress={() => {
+                        console.log("repeat pressed")
+                        Keyboard.dismiss()
+                    }}>
                     <Text style={{ fontSize: 16, flex: 1 }}>Remind Me</Text>
                     <Switch
+                        trackColor={{ true: color, false: 'grey' }}
                         value={remindMe}
-                        onValueChange={(val: boolean) => setRemindMe(val)}
+                        onValueChange={(val: boolean) => {
+                            setRemindMe(val)
+                            setShowTime(val)
+                            Keyboard.dismiss()
+                        }}
                     />
                 </TouchableOpacity>
                 <Text style={{ width: '85%', color: 'gray', paddingBottom: 10 }}>
                     Extended notifications enabled. Mark habit as done, postpone reminder for 5 minutes,
                     1 or 4 hours straightly from the notification.
                 </Text>
+                {showTime && (
+                    <DateTimePicker
+                        value={time}
+                        mode="time"
+                        display='spinner'
+                        onChange={(event, date) => {
+                            const currentDate = date || time;
+                            setTime(currentDate);
+                            if (Platform.OS == 'android') {
+                                setShowTime(false)
+                            }
+                        }}
+                    />
+                )}
+                {remindMe && Platform.OS == 'android' && (
+                    <Text style={{ textAlign: "center", fontSize: 20, padding: 5 }}>
+                        {displayTime}
+                    </Text>
+                )}
                 {divider}
             </View>
             {colorEditorOpen ? <ColorPicker color={color} setColor={setColor} exit={setColorEditorOpen} /> : null}

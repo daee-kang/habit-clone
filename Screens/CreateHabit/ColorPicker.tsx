@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, Animated } from 'react-native'
-import COLORS from '../consts/colors'
+import COLORS from '../../consts/colors'
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
 
@@ -37,7 +37,7 @@ const ColorPicker = ({ color, setColor, exit }: Props) => {
       fadeAnim,
       {
         toValue: 1,
-        duration: 100,
+        duration: 200,
         useNativeDriver: true
       }
     ).start();
@@ -48,7 +48,7 @@ const ColorPicker = ({ color, setColor, exit }: Props) => {
       scaleAnim,
       {
         toValue: 0,
-        duration: 100,
+        duration: 200,
         useNativeDriver: true
       }
     ).start()
